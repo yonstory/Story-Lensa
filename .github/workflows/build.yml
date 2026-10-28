@@ -7,13 +7,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
       - name: Build APK
         run: |
-          unzip -o StoryLensa-android.zip
+          ZIP=$(git log -1 --name-only --diff-filter=AM --pretty=format: -- '*.zip' | grep -i '\.zip$' | head -1)
+          echo "Memakai zip: $ZIP"
+          rm -rf StoryLensa
+          unzip -o "$ZIP"
           cd StoryLensa
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
